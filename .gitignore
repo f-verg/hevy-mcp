@@ -139,3 +139,6 @@ dist
 .env
 .env.sentry-build-plugin
 .aider*
+
+# Smithery TypeScript runtime build output (npx @smithery/cli build)
+.smithery/

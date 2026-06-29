@@ -134,6 +134,47 @@ This bootstraps the `hevy-mcp` entry in your client config without manual JSON e
 
 ---
 
+<a id="smithery-remote"></a>
+
+## ☁️ Remote Deployment (use from Claude on your phone) via Smithery
+
+The published npm package runs over **stdio**, which only works for desktop clients that can spawn a local process (Claude Desktop, Cursor). **Claude's mobile app can only talk to _remote_ MCP servers** added as a **custom connector** on [claude.ai](https://claude.ai) (these sync to the phone). To bridge that gap, this repo ships a [Smithery](https://smithery.ai) deployment that hosts the exact same server remotely over **Streamable HTTP** — Smithery also provides the public HTTPS endpoint and the OAuth flow Claude requires, so you never put your API key in a URL.
+
+This works because `src/index.ts` exports the Smithery TypeScript-runtime contract (`export const configSchema` + a default `createServer({ config })` returning the low-level `Server`), and [`smithery.yaml`](./smithery.yaml) selects `runtime: typescript`.
+
+### 1. Deploy on Smithery
+
+1. Push this repository to your own GitHub account (fork it).
+2. Sign in to [smithery.ai](https://smithery.ai) with GitHub and **add/deploy a server** from your fork. Smithery detects `smithery.yaml`, builds the TypeScript runtime, and hosts it over Streamable HTTP.
+3. When prompted for configuration, set **`apiKey`** to your Hevy API key (from the Hevy app → Settings → API). Smithery stores this and passes it per-connection — it is **not** baked into the build.
+4. Smithery gives you a hosted **MCP server URL** plus a "Connect" panel.
+
+### 2. Add it to Claude (then use it on your phone)
+
+1. On **[claude.ai](https://claude.ai) → Settings → Connectors → Add custom connector**, paste the Smithery MCP URL (or use Smithery's "Connect → Claude" shortcut) and complete the OAuth/authentication prompt.
+2. Open the **Claude mobile app** — connectors added on claude.ai automatically sync, so `hevy-mcp` is now available on your phone.
+
+> **Requirements & notes**
+>
+> - Custom connectors require a paid Claude plan (Pro, Max, Team, or Enterprise).
+> - A Hevy **PRO** subscription is required for API access.
+> - This build keeps the upstream **Sentry** instrumentation (and its DSN). Pseudonymous usage telemetry from your deployment flows to the upstream project's Sentry; the raw API key is never sent.
+
+### 3. (Optional) Test the remote build locally
+
+```bash
+# Produce the Streamable HTTP bundle at .smithery/index.cjs
+npm run smithery:build
+PORT=9099 node .smithery/index.cjs      # serves MCP at http://localhost:9099/mcp
+
+# …or run the interactive Smithery playground (opens in your browser)
+npm run smithery:dev
+```
+
+The local scripts pin the Smithery build CLI (`@smithery/cli@1.2.4`) because the `@smithery/cli` package name now resolves to an unrelated client CLI on its `latest` tag.
+
+---
+
 ## ✨ Why hevy-mcp?
 
 - 🚀 **High Performance**: Built with the **Oxc** toolchain (`oxlint`/`oxfmt`) for near-instant linting and formatting.
@@ -171,7 +212,7 @@ HEVY_API_KEY=your_hevy_api_key_here
 
 ### Stdio Only
 
-As of version **1.18.0**, `hevy-mcp` only supports **stdio** transport. HTTP/SSE transport has been completely removed to simplify the codebase and focus on the native MCP experience.
+As of version **1.18.0**, the `hevy-mcp` **npm package** only supports **stdio** transport. HTTP/SSE transport was removed from the package to simplify the codebase and focus on the native MCP experience. For **remote** access (e.g. Claude mobile), deploy via Smithery instead — see [Remote Deployment via Smithery](#smithery-remote), which hosts the same server over Streamable HTTP without re-introducing an HTTP server into the package.
 
 ### Docker
 

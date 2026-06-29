@@ -1,0 +1,6 @@
+# Smithery deployment config (https://smithery.ai/docs)
+# Uses the TypeScript runtime: Smithery bundles the default export from the
+# `module` entry in package.json (src/index.ts) and hosts it remotely over
+# Streamable HTTP. The Hevy API key is supplied per-connection via the
+# `configSchema` exported from src/index.ts (no key is baked into the build).
+runtime: typescript

@@ -33,6 +33,9 @@ vi.mock("@modelcontextprotocol/sdk/server/mcp.js", () => {
 	class MockMcpServer {
 		connect = vi.fn().mockResolvedValue(undefined);
 		tool = vi.fn();
+		// Smithery's CreateServerFn contract returns the low-level `Server`
+		// (McpServer.server), so the default export reads this property.
+		server = { __isLowLevelServer: true };
 	}
 
 	return {

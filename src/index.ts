@@ -128,10 +128,15 @@ function buildServer(apiKey: string) {
 	);
 }
 
+// Smithery's TypeScript runtime (https://smithery.ai) imports this default
+// export to host the server remotely over Streamable HTTP. Its CreateServerFn
+// contract expects the low-level `Server` instance, so we return `.server`
+// (the McpServer's underlying transport-connectable server) rather than the
+// McpServer wrapper used by the stdio path in `runServer`.
 export default function createServer({ config }: { config: ServerConfig }) {
 	const { apiKey } = serverConfigSchema.parse(config);
 	const server = buildServer(apiKey);
-	return server;
+	return server.server;
 }
 
 export async function runServer() {

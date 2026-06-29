@@ -28,7 +28,7 @@
 	],
 	"type": "module",
 	"main": "dist/index.mjs",
-	"module": "src/index.ts",
+	"module": "./src/index.ts",
 	"types": "dist/index.d.mts",
 	"publishConfig": {
 		"access": "public"
@@ -40,6 +40,8 @@
 		"openapi": "node ./scripts/openapi-spec.js",
 		"build": "tsdown",
 		"build:client": "kubb generate",
+		"smithery:dev": "npx -y @smithery/cli@1.2.4 dev",
+		"smithery:build": "npx -y @smithery/cli@1.2.4 build",
 		"prepack": "npm run build",
 		"start": "node --env-file .env dist/cli.mjs",
 		"dev": "tsx watch --env-file .env --clear-screen=false src/cli.ts",
