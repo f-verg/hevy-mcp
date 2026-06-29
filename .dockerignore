@@ -1,2 +1,11 @@
-# hevy-mcp no longer publishes Docker images.
-# This file remains only to document the deprecation and prevent accidental builds.
+node_modules
+.git
+dist
+.smithery
+coverage
+*.log
+.env
+.env.*
+!.env.sample
+.github
+tests/integration

@@ -44,6 +44,7 @@
 		"smithery:build": "npx -y @smithery/cli@1.2.4 build",
 		"prepack": "npm run build",
 		"start": "node --env-file .env dist/cli.mjs",
+		"start:http": "node dist/http.mjs",
 		"dev": "tsx watch --env-file .env --clear-screen=false src/cli.ts",
 		"check": "oxlint . --type-aware --type-check && oxfmt . --check",
 		"check:fix": "oxlint . --type-aware --type-check && oxfmt . --write",

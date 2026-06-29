@@ -37,7 +37,13 @@ const sentryConfig = {
 	sendDefaultPii: false,
 } as const;
 
-Sentry.init(sentryConfig);
+// Allow self-hosted deployments to opt out of Sentry so their usage telemetry
+// is not sent to the upstream project's Sentry. Defaults to enabled to preserve
+// the published package's observability behavior.
+const sentryDisabled = process.env.HEVY_MCP_DISABLE_SENTRY === "true";
+if (!sentryDisabled) {
+	Sentry.init(sentryConfig);
+}
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
